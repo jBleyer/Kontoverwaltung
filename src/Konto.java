@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Konto {
     private String kontoinhaber;
     private int bankleitzahl;
@@ -59,12 +61,39 @@ public class Konto {
        konto.setKontostand(konto.getKontostand() + geld);
     }
 
-    public void abheben() {
+    public float abheben(Konto konto, float betrag) {
+        if(konto.getKontostand() < betrag ) {
+            System.out.println("Ihre Auzahlung überschreitet ihren jetzigen Kontostand. Möchten Sie einen Überzeihungsrahmen anlegen? y/n");
+            Scanner scanner = new Scanner(System.in);
+            boolean run = true;
+            while (run){
+                //check if customer wants überziehungsrahmen
+                if (scanner.next().charAt(0) == 'n') {
+                    System.out.println("Es wurde kein Überzeihungsrahmen erstellt");
+                        run = false;
+                    //Erstelle überziehungsrahmen
+                } else if (scanner.next().charAt(0) == 'y') {
+                    System.out.println("Bitte geben Sie den Betrag Ihres Überzeihungsrahmen ein");
+                    float ueberziehungsrahmenBetrag = scanner.next().charAt(0);
+                    setUeberziehungsrahmen(ueberziehungsrahmenBetrag);
+                    run = false;
+                    break;
+                    //muss halt nochmals die funktion aufrufen
+                } else {
+                    System.out.println("Bitte geben Sie entweder 'y' oder 'n' ein!");
+                }
+            }
 
+        } else {
+            konto.setKontostand(konto.getKontostand() - betrag);
+            return betrag;
+        }
+        return 0.0f;
     }
 
     public void auszug() {
-
+        System.out.println("Ihr Kontoauszug: \n Kontoinhaber: % \n ");
+        System.out.printf("Hier print f einfügen");
     }
 
     //überweisen() als Zusatz
