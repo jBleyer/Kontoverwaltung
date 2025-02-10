@@ -44,7 +44,7 @@ public class Konto {
         this.kontonummer = kontonummer;
         this.ueberziehungsrahmen = ueberziehungsrahmen;
         this.kontofuerunsgebuehren = kontofuerunsgebuehren;
-        if(kontoart.equals("Kreditkonto")){
+        if (kontoart.equals("Kreditkonto")) {
             this.kontostand = -kontostand;
         } else {
             this.kontostand = kontostand;
@@ -56,16 +56,16 @@ public class Konto {
     }
 
     //idk tbh (gc takes care of object?)
-   // public void aufloesen(Konto konto) {}
+    // public void aufloesen(Konto konto) {}
 
     public void einzahlen(String input, float geld, ArrayList<Konto> konten) {
         //Kreditkonto-exception
-        if(kontoart.equals("Kreditkonto") && (kontostand + geld) >= 0){
+        if (kontoart.equals("Kreditkonto") && (kontostand + geld) >= 0) {
             System.out.println("Sie haben: " + (kontostand + geld) + " ueber. Vielen Dank fuer Ihre Spende.");
             System.out.println("Ihr Konto wurde geschlossen");
 
             for (int i = 0; i < konten.size(); i++) {
-                if(input.equals(konten.get(i).getKontonummer())){
+                if (input.equals(konten.get(i).getKontonummer())) {
                     konten.remove(i);
                 }
             }
@@ -76,7 +76,7 @@ public class Konto {
     public float abheben(float betrag) {
 
         //Sparkonto-exception
-        if(kontoart.equals("Sparkonto") && betrag >= kontostand){
+        if (kontoart.equals("Sparkonto") && betrag >= kontostand) {
             System.out.println("Ihr Betrag ist hoeher als sie auf dem Sparkonto zur Verfuegung haben. Abheben nicht moeglich!");
             return 0.0f;
         }
@@ -105,15 +105,28 @@ public class Konto {
             }
 
         } else {
-           setKontostand(getKontostand() - betrag);
+            setKontostand(getKontostand() - betrag);
             return betrag;
         }
         return 0.0f;
     }
 
+    public void ueberweisen(Konto k2) {
+        System.out.println("Wie viel möchte Sie ueberweisen?");
+        Scanner scanner = new Scanner(System.in);
+        float betrag = scanner.nextFloat();
+
+        if (k2.kontostand >= betrag && kontostand >= betrag) {
+            k2.kontostand += betrag;
+        } else {
+            System.out.println("Ihr Betrag ueberschreitet Ihren Kontostand. Ueberweisung nicht moeglich!");
+        }
+    }
+
     public void auszug() {
         System.out.println("Ihr Kontoauszug: \n Kontoinhaber: " + kontoinhaber + " \n Bankleitzahl: " + bankleitzahl + " \n Kontonummer: " + kontonummer + " \n Ueberziehungsrahmen: " + ueberziehungsrahmen + " \n Kontofuerunsgebuehren: " + kontofuerunsgebuehren + " \n Kontostand: " + kontostand + " \n Kontoart: " + kontoart + " \n");
     }
+
 
     //überweisen() als Zusatz
 
