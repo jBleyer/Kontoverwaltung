@@ -1,9 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Konto {
     private String kontoinhaber;
     private int bankleitzahl;
-    private int kontonummer;
+    private String kontonummer;
     private float ueberziehungsrahmen;
     private float kontofuerunsgebuehren;
     private float kontostand;
@@ -16,7 +17,7 @@ public class Konto {
 
     public Konto(String kontoinhaber,
                  int bankleitzahl,
-                 int kontonummer,
+                 String kontonummer,
                  float ueberziehungsrahmen,
                  float kontofuerunsgebuehren,
                  float kontostand,
@@ -33,7 +34,7 @@ public class Konto {
     //Methoden
     public void anlegen(String kontoinhaber,
                         int bankleitzahl,
-                        int kontonummer,
+                        String kontonummer,
                         float ueberziehungsrahmen,
                         float kontofuerunsgebuehren,
                         float kontostand,
@@ -43,25 +44,45 @@ public class Konto {
         this.kontonummer = kontonummer;
         this.ueberziehungsrahmen = ueberziehungsrahmen;
         this.kontofuerunsgebuehren = kontofuerunsgebuehren;
-        this.kontostand = kontostand;
+        if(kontoart.equals("Kreditkonto")){
+            this.kontostand = -kontostand;
+        } else {
+            this.kontostand = kontostand;
+        }
         this.kontoart = kontoart;
+
         auszug();
         System.out.println(kontoart + " wurde erfolgreich erstellt");
     }
 
-    public void aufloesen(Konto konto) {
-        //has 2 be overwritten 4 überweisung as you have to delete the object from the array
-        // gc, take care of it!
-        konto = null;
-    }
+    //idk tbh (gc takes care of object?)
+   // public void aufloesen(Konto konto) {}
 
-    public void einzahlen(float geld) {
+    public void einzahlen(String input, float geld, ArrayList<Konto> konten) {
+        //Kreditkonto-exception
+        if(kontoart.equals("Kreditkonto") && (kontostand + geld) >= 0){
+            System.out.println("Sie haben: " + (kontostand + geld) + " ueber. Vielen Dank fuer Ihre Spende.");
+            System.out.println("Ihr Konto wurde geschlossen");
+
+            for (int i = 0; i < konten.size(); i++) {
+                if(input.equals(konten.get(i).getKontonummer())){
+                    konten.remove(i);
+                }
+            }
+        }
         setKontostand(getKontostand() + geld);
     }
 
-    public float abheben( float betrag) {
-        if (getKontostand() < betrag) {
-            System.out.println("Ihre Auzahlung überschreitet ihren jetzigen Kontostand. Möchten Sie einen Überzeihungsrahmen anlegen? y/n");
+    public float abheben(float betrag) {
+
+        //Sparkonto-exception
+        if(kontoart.equals("Sparkonto") && betrag >= kontostand){
+            System.out.println("Ihr Betrag ist hoeher als sie auf dem Sparkonto zur Verfuegung haben. Abheben nicht moeglich!");
+            return 0.0f;
+        }
+
+        if (kontostand < betrag) {
+            System.out.println("Ihre Auzahlung ueberschreitet ihren jetzigen Kontostand. Moechten Sie einen Überzeihungsrahmen anlegen? y/n");
             Scanner scanner = new Scanner(System.in);
             boolean run = true;
 
@@ -92,7 +113,6 @@ public class Konto {
 
     public void auszug() {
         System.out.println("Ihr Kontoauszug: \n Kontoinhaber: " + kontoinhaber + " \n Bankleitzahl: " + bankleitzahl + " \n Kontonummer: " + kontonummer + " \n Ueberziehungsrahmen: " + ueberziehungsrahmen + " \n Kontofuerunsgebuehren: " + kontofuerunsgebuehren + " \n Kontostand: " + kontostand + " \n Kontoart: " + kontoart + " \n");
-
     }
 
     //überweisen() als Zusatz
@@ -106,7 +126,7 @@ public class Konto {
         this.bankleitzahl = bankleitzahl;
     }
 
-    public void setKontonummer(int kontonummer) {
+    public void setKontonummer(String kontonummer) {
         this.kontonummer = kontonummer;
     }
 
@@ -135,7 +155,7 @@ public class Konto {
         return bankleitzahl;
     }
 
-    public int getKontonummer() {
+    public String getKontonummer() {
         return kontonummer;
     }
 
